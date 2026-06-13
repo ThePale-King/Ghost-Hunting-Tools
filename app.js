@@ -5,17 +5,18 @@ const audioCanvas = document.getElementById('audioCanvas');
 
 let audioCtx, recorder, stream, recordedChunks = [];
 let logs = [], nvMultiplier = 6, currentMode = "SLS"; 
+let isFlashlightOn = false, sensorActive = false, lastTotal = 0;
 
-// 1. Initial State Check
 window.onload = () => {
     if (localStorage.getItem('ghostCam_granted') === 'true') {
-        document.getElementById('initBtn').innerText = "RESUMING...";
-        startCamera();
+        initSuite();
     }
 };
 
 async function initSuite() {
+    document.getElementById('initBtn').innerText = "SYNCING...";
     await startCamera();
+    document.getElementById('initBtn').innerText = "RE-SYNC SYSTEM";
 }
 
 async function startCamera() {
@@ -24,10 +25,7 @@ async function startCamera() {
             video: { facingMode: "environment" }, 
             audio: true 
         });
-        
         localStorage.setItem('ghostCam_granted', 'true');
-        document.getElementById('initBtn').style.display = 'none';
-
         rawVideo.srcObject = stream;
         rawVideo.onloadedmetadata = () => {
             mainCanvas.width = rawVideo.videoWidth;
@@ -35,14 +33,11 @@ async function startCamera() {
             processViewfinder();
             setupAudioVisualizer(stream);
         };
-    } catch (e) { 
-        alert("Camera Access Required. Check browser permissions."); 
-    }
+    } catch (e) { alert("Camera Access Required."); }
 }
 
 function processViewfinder() {
     mainCtx.drawImage(rawVideo, 0, 0, mainCanvas.width, mainCanvas.height);
-    
     if (currentMode === "SLS") {
         mainCanvas.style.filter = "sepia(1) hue-rotate(70deg) brightness(1.2) contrast(1.5)";
     } else {
@@ -59,21 +54,26 @@ function processViewfinder() {
     requestAnimationFrame(processViewfinder);
 }
 
+async function toggleFlashlight() {
+    if (!stream) return alert("Sync System first!");
+    const track = stream.getVideoTracks()[0];
+    try {
+        isFlashlightOn = !isFlashlightOn;
+        await track.applyConstraints({ advanced: [{ torch: isFlashlightOn }] });
+        document.getElementById('torchBtn').innerText = `Flashlight: ${isFlashlightOn ? 'ON' : 'OFF'}`;
+    } catch (e) { alert("Flashlight not supported on this device."); }
+}
+
 function toggleMode() {
-    const title = document.getElementById('modeTitle');
-    const nvControls = document.getElementById('nvControls');
     currentMode = (currentMode === "SLS") ? "NIGHTVISION" : "SLS";
-    title.innerText = (currentMode === "SLS") ? "SYSTEM: SLS OVERLAY" : "SYSTEM: NV AMPLIFIER";
-    nvControls.style.display = (currentMode === "SLS") ? "none" : "flex";
+    document.getElementById('modeTitle').innerText = currentMode === "SLS" ? "SYSTEM: SLS OVERLAY" : "SYSTEM: NV AMPLIFIER";
+    document.getElementById('nvControls').style.display = currentMode === "SLS" ? "none" : "flex";
 }
 
 function toggleFullscreen() {
     const container = document.getElementById('cameraContainer');
-    if (!document.fullscreenElement) {
-        container.requestFullscreen().catch(err => alert("Error: " + err.message));
-    } else {
-        document.exitFullscreen();
-    }
+    if (!document.fullscreenElement) container.requestFullscreen();
+    else document.exitFullscreen();
 }
 
 function toggleRecording() {
@@ -82,12 +82,10 @@ function toggleRecording() {
         recordedChunks = [];
         const canvasStream = mainCanvas.captureStream(30);
         const audioTracks = stream.getAudioTracks();
-        if (audioTracks.length > 0) canvasStream.addTrack(audioTracks[0]);
-
+        if (audioTracks.length > 0) canvasStream.addTrack(audioTracks);
         recorder = new MediaRecorder(canvasStream);
-        recorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
-        recorder.onstop = () => { document.getElementById('downloadBtn').disabled = false; };
-        
+        recorder.ondataavailable = e => recordedChunks.push(e.data);
+        recorder.onstop = () => document.getElementById('downloadBtn').disabled = false;
         recorder.start();
         btn.innerText = "🔴 STOPPING...";
     } else {
@@ -105,33 +103,36 @@ function downloadVideo() {
 }
 
 function armREMPod() {
+    if (sensorActive) return;
     if (typeof DeviceMotionEvent.requestPermission === 'function') {
-        DeviceMotionEvent.requestPermission().then(response => {
-            if (response == 'granted') startMotion();
-        });
+        DeviceMotionEvent.requestPermission().then(res => { if (res == 'granted') startMotion(); });
     } else { startMotion(); }
 }
 
 function startMotion() {
-    window.addEventListener('devicemotion', e => {
-        let acc = e.accelerationIncludingGravity;
-        let total = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
-        if (Math.abs(total - lastTotal) > 2.0) triggerMotion();
-        lastTotal = total;
-    });
+    sensorActive = true;
+    window.addEventListener('devicemotion', handleMotion);
     document.getElementById('remStatus').innerText = "ARMED";
 }
 
-let lastTotal = 0;
-function triggerMotion() {
-    const logEl = document.getElementById('timestampLog');
-    const status = document.getElementById('remStatus');
-    const entry = `[${new Date().toLocaleTimeString()}] MOTION`;
-    logs.push(entry);
-    logEl.innerHTML = entry + "<br>" + logEl.innerHTML;
-    status.classList.add('alert');
-    status.innerText = "TRIGGERED";
-    setTimeout(() => { status.classList.remove('alert'); status.innerText = "ARMED"; }, 1000);
+function disarmREMPod() {
+    sensorActive = false;
+    window.removeEventListener('devicemotion', handleMotion);
+    document.getElementById('remStatus').innerText = "STANDBY";
+    document.getElementById('remStatus').classList.remove('alert');
+}
+
+function handleMotion(e) {
+    let acc = e.accelerationIncludingGravity;
+    let total = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
+    if (Math.abs(total - lastTotal) > 2.0) {
+        const entry = `[${new Date().toLocaleTimeString()}] MOTION`;
+        logs.push(entry);
+        document.getElementById('timestampLog').innerHTML = entry + "<br>" + document.getElementById('timestampLog').innerHTML;
+        document.getElementById('remStatus').classList.add('alert');
+        setTimeout(() => document.getElementById('remStatus').classList.remove('alert'), 500);
+    }
+    lastTotal = total;
 }
 
 function downloadLogs() {
@@ -149,16 +150,12 @@ function setupAudioVisualizer(stream) {
     source.connect(analyser);
     const dArray = new Uint8Array(analyser.frequencyBinCount);
     const aCtx = audioCanvas.getContext('2d');
-
     function draw() {
         requestAnimationFrame(draw);
         analyser.getByteFrequencyData(dArray);
         aCtx.fillStyle = '#0d1117'; aCtx.fillRect(0,0,audioCanvas.width, audioCanvas.height);
         aCtx.fillStyle = '#00ff66';
-        for(let i=0; i<dArray.length; i+=25) {
-            let v = dArray[i];
-            aCtx.fillRect(i/4, audioCanvas.height - v/2, 4, v/2);
-        }
+        for(let i=0; i<dArray.length; i+=25) aCtx.fillRect(i/4, audioCanvas.height - dArray[i]/2, 4, dArray[i]/2);
     }
     draw();
 }
