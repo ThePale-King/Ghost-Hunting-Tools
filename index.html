@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opera GX Ghost Hunting Suite</title>
+    <title>Ghost Hunting Suite</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,7 +11,8 @@
 <h1>Paranormal Suite</h1>
 
 <div class="dashboard">
-    <!-- MAIN VIEWFINDER TOOL -->
+
+    <!-- MAIN VIEWFINDER -->
     <div class="tool-box main-view" id="cameraContainer">
         <h2 id="modeTitle">SYSTEM: SLS OVERLAY</h2>
         
@@ -21,7 +22,8 @@
         </div>
 
         <div class="controls-grid">
-            <button id="initBtn" onclick="initSuite()" style="background: #00ff66; color: #000;">Initialize System</button>
+            <button id="initBtn" onclick="initSuite()" style="border-color: #ff0055;">Sync System</button>
+            <button id="torchBtn" onclick="toggleFlashlight()">Flashlight: OFF</button>
             <button onclick="toggleMode()">Switch Mode</button>
             <button onclick="toggleFullscreen()">Fullscreen</button>
             <button id="recBtn" onclick="toggleRecording()">Record Session</button>
@@ -35,7 +37,7 @@
         </div>
     </div>
 
-    <!-- SENSOR & LOG TOOL -->
+    <!-- MOTION SENSOR -->
     <div class="tool-box">
         <h2>Motion & Activity</h2>
         <div id="remStatus" class="status-display">STANDBY</div>
@@ -43,16 +45,18 @@
             <div id="timestampLog">Logs empty...</div>
         </div>
         <div class="controls-grid">
-            <button onclick="armREMPod()">Arm Sensor</button>
+            <button onclick="armREMPod()" style="color: #00ff66;">Arm</button>
+            <button onclick="disarmREMPod()" style="color: #ff0055;">Disarm</button>
             <button onclick="downloadLogs()">Export TXT</button>
         </div>
     </div>
 
-    <!-- AUDIO TOOL -->
+    <!-- AUDIO VISUALIZER -->
     <div class="tool-box">
         <h2>EVP Audio Visualizer</h2>
         <canvas id="audioCanvas"></canvas>
     </div>
+
 </div>
 
 <script src="app.js"></script>
