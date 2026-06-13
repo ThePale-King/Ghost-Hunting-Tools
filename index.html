@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +23,14 @@
     <div class="tool-box">
         <h2>2. REM Pod Simulator</h2>
         <div id="remStatus" class="status-display">CALIBRATED</div>
-        <div id="remVal" style="font-size: 11px;">Move detection active...</div>
+        <div id="remVal" style="font-size: 11px; margin-bottom: 5px;">Move detection active...</div>
+        
+        <!-- Live Timestamp Log Container -->
+        <div id="logContainer">
+            <div style="font-weight: bold; border-bottom: 1px solid #ff0055; margin-bottom: 5px;">ACTIVITY LOG:</div>
+            <div id="timestampLog">No triggers recorded yet.</div>
+        </div>
+
         <button style="margin-top:10px;" onclick="armREMPod()">Arm Sensor</button>
     </div>
 
@@ -42,18 +48,18 @@
     <div class="tool-box">
         <h2>4. NV Exposure Amplifier</h2>
         <canvas id="nvViewfinder"></canvas>
-        <video id="nvHiddenVideo" autoplay playsinline muted style="display:none;"></video>
+        <!-- The hidden camera element that pumps video frames to the canvas processing matrix -->
+        <video id="nvHiddenVideo" autoplay playsinline muted></video>
         <div class="slider-container">
             <label>GAIN:</label>
-            <input type="range" id="nvGain" min="1" max="10" step="0.5" value="4">
-            <span id="nvGainVal">4x</span>
+            <input type="range" id="nvGain" min="1" max="15" step="0.5" value="6">
+            <span id="nvGainVal">6x</span>
         </div>
         <button id="nvBtn" onclick="startNightVision()">Boot NV Lens</button>
     </div>
 
 </div>
 
-<!-- Scripts loaded at the end of the body -->
 <script src="tools.js"></script>
 <script src="app.js"></script>
 </body>
