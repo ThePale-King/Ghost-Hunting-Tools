@@ -1,8 +1,6 @@
-
-// Global Shared Configurations and UI listeners
+// Shared Audio Pipeline initialization helper
 let audioCtx;
 
-// Initialize shared AudioContext across recorders and sound alerts safely
 function getAudioContext() {
     if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -13,7 +11,10 @@ function getAudioContext() {
     return audioCtx;
 }
 
-// Night Vision Gain Slider Setup
+// Global scope tracker for real-time video manipulation multiplier
+let nvMultiplier = 6; 
+
+// Dynamic Slider Input Hook
 const nvGainSlider = document.getElementById('nvGain');
 const nvGainVal = document.getElementById('nvGainVal');
 
