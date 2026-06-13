@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ghost Hunting Suite</title>
+    <title>AI Paranormal Suite</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Load TensorFlow.js and COCO-SSD Model -->
+    <script src="https://jsdelivr.net"></script>
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body>
 
-<h1>Paranormal Suite</h1>
+<h1>AI Paranormal Suite</h1>
 
 <div class="dashboard">
 
     <!-- MAIN VIEWFINDER -->
     <div class="tool-box main-view" id="cameraContainer">
-        <h2 id="modeTitle">SYSTEM: SLS OVERLAY</h2>
+        <h2 id="modeTitle">SYSTEM: NORMAL MODE</h2>
         
         <div class="canvas-container">
             <canvas id="mainCanvas"></canvas>
@@ -35,11 +38,13 @@
             <input type="range" id="nvGain" min="1" max="20" step="0.5" value="6">
             <span id="nvGainVal">6x</span>
         </div>
+        
+        <div id="aiStatus" style="font-size: 10px; margin-top: 5px; color: #aaa;">AI: LOADING MODEL...</div>
     </div>
 
-    <!-- MOTION SENSOR -->
+    <!-- MOTION & AI LOGS -->
     <div class="tool-box">
-        <h2>Motion & Activity</h2>
+        <h2>Activity & AI Tracking</h2>
         <div id="remStatus" class="status-display">STANDBY</div>
         <div id="logContainer">
             <div id="timestampLog">Logs empty...</div>
