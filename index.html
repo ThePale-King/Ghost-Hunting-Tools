@@ -11,7 +11,6 @@
 <h1>Paranormal Suite</h1>
 
 <div class="dashboard">
-
     <!-- MAIN VIEWFINDER TOOL -->
     <div class="tool-box main-view" id="cameraContainer">
         <h2 id="modeTitle">SYSTEM: SLS OVERLAY</h2>
@@ -22,6 +21,7 @@
         </div>
 
         <div class="controls-grid">
+            <button id="initBtn" onclick="initSuite()" style="background: #00ff66; color: #000;">Initialize System</button>
             <button onclick="toggleMode()">Switch Mode</button>
             <button onclick="toggleFullscreen()">Fullscreen</button>
             <button id="recBtn" onclick="toggleRecording()">Record Session</button>
@@ -52,9 +52,7 @@
     <div class="tool-box">
         <h2>EVP Audio Visualizer</h2>
         <canvas id="audioCanvas"></canvas>
-        <div id="evpStatus">MIC IDLE</div>
     </div>
-
 </div>
 
 <script src="app.js"></script>
