@@ -1,23 +1,62 @@
-<!-- MAIN VIEWFINDER TOOL -->
-<div class="tool-box main-view" id="cameraContainer">
-    <h2 id="modeTitle">SYSTEM: SLS OVERLAY</h2>
-    
-    <div class="canvas-container">
-        <canvas id="mainCanvas"></canvas>
-        <video id="rawVideo" autoplay playsinline muted></video>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opera GX Ghost Hunting Suite</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>Paranormal Suite</h1>
+
+<div class="dashboard">
+
+    <!-- MAIN VIEWFINDER TOOL -->
+    <div class="tool-box main-view" id="cameraContainer">
+        <h2 id="modeTitle">SYSTEM: SLS OVERLAY</h2>
+        
+        <div class="canvas-container">
+            <canvas id="mainCanvas"></canvas>
+            <video id="rawVideo" autoplay playsinline muted></video>
+        </div>
+
+        <div class="controls-grid">
+            <button onclick="toggleMode()">Switch Mode</button>
+            <button onclick="toggleFullscreen()">Fullscreen</button>
+            <button id="recBtn" onclick="toggleRecording()">Record Session</button>
+            <button id="downloadBtn" onclick="downloadVideo()" disabled>Save MP4</button>
+        </div>
+
+        <div class="slider-container" id="nvControls" style="display:none;">
+            <label>GAIN:</label>
+            <input type="range" id="nvGain" min="1" max="20" step="0.5" value="6">
+            <span id="nvGainVal">6x</span>
+        </div>
     </div>
 
-    <div class="controls-grid">
-        <button onclick="toggleMode()">Switch Mode</button>
-        <!-- NEW FULLSCREEN BUTTON -->
-        <button onclick="toggleFullscreen()">Fullscreen</button>
-        <button id="recBtn" onclick="toggleRecording()">Record Session</button>
-        <button id="downloadBtn" onclick="downloadVideo()" disabled>Save MP4</button>
+    <!-- SENSOR & LOG TOOL -->
+    <div class="tool-box">
+        <h2>Motion & Activity</h2>
+        <div id="remStatus" class="status-display">STANDBY</div>
+        <div id="logContainer">
+            <div id="timestampLog">Logs empty...</div>
+        </div>
+        <div class="controls-grid">
+            <button onclick="armREMPod()">Arm Sensor</button>
+            <button onclick="downloadLogs()">Export TXT</button>
+        </div>
     </div>
 
-    <div class="slider-container" id="nvControls" style="display:none;">
-        <label>GAIN:</label>
-        <input type="range" id="nvGain" min="1" max="20" step="0.5" value="6">
-        <span id="nvGainVal">6x</span>
+    <!-- AUDIO TOOL -->
+    <div class="tool-box">
+        <h2>EVP Audio Visualizer</h2>
+        <canvas id="audioCanvas"></canvas>
+        <div id="evpStatus">MIC IDLE</div>
     </div>
+
 </div>
+
+<script src="app.js"></script>
+</body>
+</html>
