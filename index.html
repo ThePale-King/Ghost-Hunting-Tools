@@ -1,66 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opera GX Ghost Hunting Suite</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-<h1>Paranormal Toolkit</h1>
-
-<div class="dashboard">
-
-    <!-- TOOL 1: SLS CAMERA VISION -->
-    <div class="tool-box">
-        <h2>1. SLS Camera Overlay</h2>
-        <video id="slsVideo" autoplay playsinline muted></video>
-        <button onclick="startSLS()">Activate Camera</button>
+<!-- MAIN VIEWFINDER TOOL -->
+<div class="tool-box main-view" id="cameraContainer">
+    <h2 id="modeTitle">SYSTEM: SLS OVERLAY</h2>
+    
+    <div class="canvas-container">
+        <canvas id="mainCanvas"></canvas>
+        <video id="rawVideo" autoplay playsinline muted></video>
     </div>
 
-    <!-- TOOL 2: REM POD MOTION TRIGGER -->
-    <div class="tool-box">
-        <h2>2. REM Pod Simulator</h2>
-        <div id="remStatus" class="status-display">CALIBRATED</div>
-        <div id="remVal" style="font-size: 11px; margin-bottom: 5px;">Move detection active...</div>
-        
-        <!-- Live Timestamp Log Container -->
-        <div id="logContainer">
-            <div style="font-weight: bold; border-bottom: 1px solid #ff0055; margin-bottom: 5px;">ACTIVITY LOG:</div>
-            <div id="timestampLog">No triggers recorded yet.</div>
-        </div>
-
-        <button style="margin-top:10px;" onclick="armREMPod()">Arm Sensor</button>
+    <div class="controls-grid">
+        <button onclick="toggleMode()">Switch Mode</button>
+        <!-- NEW FULLSCREEN BUTTON -->
+        <button onclick="toggleFullscreen()">Fullscreen</button>
+        <button id="recBtn" onclick="toggleRecording()">Record Session</button>
+        <button id="downloadBtn" onclick="downloadVideo()" disabled>Save MP4</button>
     </div>
 
-    <!-- TOOL 3: EVP AUDIO RECORDER -->
-    <div class="tool-box">
-        <h2>3. EVP Audio Recorder</h2>
-        <canvas id="visualizer"></canvas>
-        <div style="display: flex; gap: 10px;">
-            <button id="recBtn" onclick="toggleEVP()">Record EVP</button>
-            <button id="playBtn" onclick="playEVP()" disabled>Playback</button>
-        </div>
+    <div class="slider-container" id="nvControls" style="display:none;">
+        <label>GAIN:</label>
+        <input type="range" id="nvGain" min="1" max="20" step="0.5" value="6">
+        <span id="nvGainVal">6x</span>
     </div>
-
-    <!-- TOOL 4: NIGHT VISION AMPLIFIER -->
-    <div class="tool-box">
-        <h2>4. NV Exposure Amplifier</h2>
-        <canvas id="nvViewfinder"></canvas>
-        <!-- The hidden camera element that pumps video frames to the canvas processing matrix -->
-        <video id="nvHiddenVideo" autoplay playsinline muted></video>
-        <div class="slider-container">
-            <label>GAIN:</label>
-            <input type="range" id="nvGain" min="1" max="15" step="0.5" value="6">
-            <span id="nvGainVal">6x</span>
-        </div>
-        <button id="nvBtn" onclick="startNightVision()">Boot NV Lens</button>
-    </div>
-
 </div>
-
-<script src="tools.js"></script>
-<script src="app.js"></script>
-</body>
-</html>
