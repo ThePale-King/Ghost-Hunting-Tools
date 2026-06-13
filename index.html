@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opera GX Ghost Hunting Suite</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>Paranormal Toolkit</h1>
+
+<div class="dashboard">
+
+    <!-- TOOL 1: SLS CAMERA VISION -->
+    <div class="tool-box">
+        <h2>1. SLS Camera Overlay</h2>
+        <video id="slsVideo" autoplay playsinline muted></video>
+        <button onclick="startSLS()">Activate Camera</button>
+    </div>
+
+    <!-- TOOL 2: REM POD MOTION TRIGGER -->
+    <div class="tool-box">
+        <h2>2. REM Pod Simulator</h2>
+        <div id="remStatus" class="status-display">CALIBRATED</div>
+        <div id="remVal" style="font-size: 11px;">Move detection active...</div>
+        <button style="margin-top:10px;" onclick="armREMPod()">Arm Sensor</button>
+    </div>
+
+    <!-- TOOL 3: EVP AUDIO RECORDER -->
+    <div class="tool-box">
+        <h2>3. EVP Audio Recorder</h2>
+        <canvas id="visualizer"></canvas>
+        <div style="display: flex; gap: 10px;">
+            <button id="recBtn" onclick="toggleEVP()">Record EVP</button>
+            <button id="playBtn" onclick="playEVP()" disabled>Playback</button>
+        </div>
+    </div>
+
+    <!-- TOOL 4: NIGHT VISION AMPLIFIER -->
+    <div class="tool-box">
+        <h2>4. NV Exposure Amplifier</h2>
+        <canvas id="nvViewfinder"></canvas>
+        <video id="nvHiddenVideo" autoplay playsinline muted style="display:none;"></video>
+        <div class="slider-container">
+            <label>GAIN:</label>
+            <input type="range" id="nvGain" min="1" max="10" step="0.5" value="4">
+            <span id="nvGainVal">4x</span>
+        </div>
+        <button id="nvBtn" onclick="startNightVision()">Boot NV Lens</button>
+    </div>
+
+</div>
+
+<!-- Scripts loaded at the end of the body -->
+<script src="tools.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
